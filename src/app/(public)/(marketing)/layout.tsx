@@ -1,5 +1,13 @@
 import type { ReactNode } from "react";
+import Footer from "@/components/layout/public/Footer";
+import Header from "@/components/layout/public/Header";
 
 export default function MarketingLayout({ children }: { children: ReactNode }) {
-  return <>{children}</>;
+  return (
+    <div className="flex flex-col gap-4 min-h-screen">
+      <Header />
+      <main className="flex-1">{children}</main>
+      <Footer />
+    </div>
+  );
 }
