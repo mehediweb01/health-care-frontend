@@ -1,5 +1,5 @@
-import { cn } from "cn";
-import Link from "next/link";
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,16 +10,36 @@ import {
 } from "@/components/ui/card";
 import {
   Field,
-  FieldDescription,
+  FieldError,
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { loginSchema } from "@/validations";
+import { useForm } from "@tanstack/react-form";
+import { cn } from "cn";
+import { Eye, EyeClosed } from "lucide-react";
+import { useState } from "react";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const [showPassword, setShowPassword] = useState(false);
+
+  const form = useForm({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+    validators: {
+      onSubmit: loginSchema,
+    },
+    onSubmit: ({ value }) => {
+      console.log(value);
+    },
+  });
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -30,38 +50,79 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              form.handleSubmit();
+            }}
+          >
             <FieldGroup>
-              <Field>
-                <FieldLabel htmlFor="email">Email</FieldLabel>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  required
-                />
-              </Field>
-              <Field>
-                <div className="flex items-center">
-                  <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <Link
-                    href="#"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </Link>
-                </div>
-                <Input id="password" type="password" required />
-              </Field>
-              <Field>
-                <Button type="submit">Login</Button>
-                <Button variant="outline" type="button">
-                  Login with Google
-                </Button>
-                <FieldDescription className="text-center">
-                  Don&apos;t have an account? <Link href="#">Sign up</Link>
-                </FieldDescription>
-              </Field>
+              <form.Field name="email">
+                {(filed) => {
+                  const isInvalid =
+                    filed.state.meta.isTouched && !filed.state.meta.isValid;
+                  return (
+                    <Field>
+                      <FieldLabel htmlFor={filed.name}>Email</FieldLabel>
+                      <Input
+                        id={filed.name}
+                        type="email"
+                        name={filed.name}
+                        onChange={(e) => filed.handleChange(e.target.value)}
+                        onBlur={filed.handleBlur}
+                        autoComplete="off"
+                        value={filed.state.value}
+                        aria-invalid={isInvalid}
+                      />
+                      {isInvalid && (
+                        <FieldError errors={filed.state.meta.errors} />
+                      )}
+                    </Field>
+                  );
+                }}
+              </form.Field>
+              <form.Field name="password">
+                {(filed) => {
+                  const isInvalid =
+                    filed.state.meta.isTouched && !filed.state.meta.isValid;
+                  return (
+                    <Field>
+                      <FieldLabel htmlFor={filed.name}>Password</FieldLabel>
+                      <div className="relative">
+                        <Input
+                          id={filed.name}
+                          type={showPassword ? "text" : "password"}
+                          name={filed.name}
+                          onChange={(e) => filed.handleChange(e.target.value)}
+                          onBlur={filed.handleBlur}
+                          autoComplete="off"
+                          value={filed.state.value}
+                          aria-invalid={isInvalid}
+                          className="pr-8"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-400"
+                        >
+                          {showPassword ? (
+                            <EyeClosed className="size-5" />
+                          ) : (
+                            <Eye className="size-5" />
+                          )}
+                        </button>
+                      </div>
+
+                      {isInvalid && (
+                        <FieldError errors={filed.state.meta.errors} />
+                      )}
+                    </Field>
+                  );
+                }}
+              </form.Field>
+              <Button type="submit" className="w-full">
+                Login
+              </Button>
             </FieldGroup>
           </form>
         </CardContent>
