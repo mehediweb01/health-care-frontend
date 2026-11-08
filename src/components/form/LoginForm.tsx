@@ -15,6 +15,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import useLogin from "@/hooks/auth.hook";
 import { loginSchema } from "@/validations";
 import { useForm } from "@tanstack/react-form";
 import { cn } from "cn";
@@ -27,6 +28,8 @@ export function LoginForm({
 }: React.ComponentProps<"div">) {
   const [showPassword, setShowPassword] = useState(false);
 
+  const { mutate, isPending } = useLogin();
+
   const form = useForm({
     defaultValues: {
       email: "",
@@ -36,7 +39,19 @@ export function LoginForm({
       onSubmit: loginSchema,
     },
     onSubmit: ({ value }) => {
-      console.log(value);
+      const loginData = {
+        email: value.email,
+        password: value.password,
+      };
+
+      mutate(loginData, {
+        onSuccess: (res) => {
+          console.log(res);
+        },
+        onError: (err) => {
+          console.log(err);
+        },
+      });
     },
   });
 
