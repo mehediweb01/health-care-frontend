@@ -4,6 +4,7 @@ const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const apiClient = ofetch.create({
   baseURL: baseUrl,
+  credentials: "include",
 });
 
 export default apiClient;

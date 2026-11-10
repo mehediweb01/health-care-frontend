@@ -20,6 +20,7 @@ import { loginSchema } from "@/validations";
 import { useForm } from "@tanstack/react-form";
 import { cn } from "cn";
 import { Eye, EyeClosed } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export function LoginForm({
@@ -27,13 +28,14 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"div">) {
   const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
 
-  const { mutate, isPending } = useLogin();
+  const { mutate: login, isPending: loginPending } = useLogin();
 
   const form = useForm({
     defaultValues: {
-      email: "",
-      password: "",
+      email: "superadmin@gmail.com",
+      password: "Super@1",
     },
     validators: {
       onSubmit: loginSchema,
@@ -44,9 +46,10 @@ export function LoginForm({
         password: value.password,
       };
 
-      mutate(loginData, {
+      login(loginData, {
         onSuccess: (res) => {
-          console.log(res);
+          form.reset();
+          router.push("/");
         },
         onError: (err) => {
           console.log(err);
@@ -136,7 +139,7 @@ export function LoginForm({
                 }}
               </form.Field>
               <Button type="submit" className="w-full">
-                Login
+                {loginPending ? "Logging in..." : "Login"}
               </Button>
             </FieldGroup>
           </form>

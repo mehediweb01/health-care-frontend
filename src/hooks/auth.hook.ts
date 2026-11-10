@@ -1,7 +1,7 @@
 import { userLogin } from "@/api";
 import { useMutation } from "@tanstack/react-query";
 
-const useLogin = async () => {
+const useLogin = () => {
   return useMutation({
     mutationFn: userLogin,
   });
