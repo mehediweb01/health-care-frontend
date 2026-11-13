@@ -22,6 +22,7 @@ import { cn } from "cn";
 import { Eye, EyeClosed } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "../ui/toast";
 
 export function LoginForm({
   className,
@@ -48,10 +49,20 @@ export function LoginForm({
 
       login(loginData, {
         onSuccess: (res) => {
+          toast.add({
+            title: "Login Successful",
+            description: "You have successfully logged in.",
+            type: "success",
+          });
           form.reset();
           router.push("/");
         },
         onError: (err) => {
+          toast.add({
+            title: "Login Failed",
+            description: "Invalid email or password.",
+            type: "error",
+          });
           console.log(err);
         },
       });
@@ -138,7 +149,7 @@ export function LoginForm({
                   );
                 }}
               </form.Field>
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full" disabled={loginPending}>
                 {loginPending ? "Logging in..." : "Login"}
               </Button>
             </FieldGroup>
