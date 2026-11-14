@@ -15,7 +15,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import useLogin from "@/hooks/auth.hook";
+import { useLogin } from "@/hooks";
 import { loginSchema } from "@/validations";
 import { useForm } from "@tanstack/react-form";
 import { cn } from "cn";

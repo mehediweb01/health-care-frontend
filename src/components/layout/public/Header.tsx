@@ -33,7 +33,7 @@ const Header = () => {
       </div>
       {/* register login */}
       <div>
-        <Button render={<Link href={"/login"} />}>Login</Button>
+        <Button render={<Link href={"/login"} />} nativeButton={false}>Login</Button>
       </div>
     </header>
   );
